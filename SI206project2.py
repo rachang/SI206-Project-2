@@ -1,7 +1,7 @@
 ## SI 206 W17 - Project 2
 
 ## COMMENT HERE WITH:
-## Your name:
+## Your name:Rachel Chang
 ## Anyone you worked with on this project:
 
 ## Below we have provided import statements, comments to separate out the
@@ -39,9 +39,12 @@ def find_urls(s):
 ## http://www.michigandaily.com/section/opinion
 
 def grab_headlines():
-    f = open("opinion.html", "r")
+    f = open("opinion.html", "r", encoding = "utf8")
     soup = BeautifulSoup(f, "html.parser")
-    pass
+    tags = soup("div", "view view-most-read view-id-most_read view-display-id-panel_pane_1 view-dom-id-99658157999dd0ac5aa62c2b284dd266")
+    for i in tags:
+    	i = i.text.strip().split("\n")
+    return(i)
     #Your code here
 
 
