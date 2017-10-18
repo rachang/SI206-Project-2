@@ -69,11 +69,11 @@ def get_umsi_data():
 	for i in range(13):
 		html = requests.get(url, headers={'User-Agent': 'SI_CLASS'})
 		soup = BeautifulSoup(html.text, 'html.parser')
-		names = soup("div", "field field-name-title field-type-ds field-label-hidden")
+		names = soup("div", "field-name-title")
 		for k in names:
 			k = k.text
 			name.append(k)
-		titles = soup("div", "field field-name-field-person-titles field-type-text field-label-hidden")
+		titles = soup("div", "field-name-field-person-titles")
 		for v in titles:
 			v = v.text
 			title.append(v)
@@ -90,8 +90,9 @@ def get_umsi_data():
 ## INPUT: The dictionary from get_umsi_data().
 ## OUTPUT: Return number of PhD students in the data.  (Don't forget, I may change the input data)
 def num_students(data):
-    pass
-    #Your code here
+    from collections import Counter
+    c = Counter(data.values())
+    return(c["PhD student"])
 
 
 
