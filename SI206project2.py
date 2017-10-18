@@ -14,9 +14,6 @@ import unittest
 import requests
 import re
 from bs4 import BeautifulSoup
-from urllib.request import urlopen
-import ssl
-
 
 ## Part 1 -- Define your find_urls function here.
 ## INPUT: any string
@@ -41,13 +38,10 @@ def find_urls(s):
 ## http://www.michigandaily.com/section/opinion
 
 def grab_headlines():
-	ctx = ssl.create_default_context()
-	ctx.check_hostname = False
-	ctx.verify_mode = ssl.CERT_NONE
 	url = "https://www.michigandaily.com/section/opinion"
-	html = urlopen(url, context=ctx).read()
-	soup = BeautifulSoup(html, "html.parser")
-	tags = soup("div", "view view-most-read view-id-most_read view-display-id-panel_pane_1 view-dom-id-99658157999dd0ac5aa62c2b284dd266")
+	html = requests.get(url)
+	soup = BeautifulSoup(html.text, "html.parser")
+	tags = soup("div", "view-most-read")
 	for i in tags:
 		i = i.text.strip().split("\n")
 	return(i)
@@ -68,7 +62,28 @@ def grab_headlines():
 ## requests.get(base_url, headers={'User-Agent': 'SI_CLASS'})
 
 def get_umsi_data():
-    pass
+	url = "https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastname_value=&rid=All"
+	name = []
+	title = []
+	i = 0
+	for i in range(13):
+		html = requests.get(url, headers={'User-Agent': 'SI_CLASS'})
+		soup = BeautifulSoup(html.text, 'html.parser')
+		names = soup("div", "field field-name-title field-type-ds field-label-hidden")
+		for k in names:
+			k = k.text
+			name.append(k)
+		titles = soup("div", "field field-name-field-person-titles field-type-text field-label-hidden")
+		for v in titles:
+			v = v.text
+			title.append(v)
+		link = soup.find(class_ = "pager-next last")
+		if i != 12:
+			for url in link:
+				url = "https://www.si.umich.edu" + url.get("href")
+	umsi_titles = dict(zip(name, title))
+	return(umsi_titles)
+	
     #Your code here
 
 ## PART 3 (b) Define a function called num_students.
